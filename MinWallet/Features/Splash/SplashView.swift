@@ -61,7 +61,6 @@ struct SplashView: View {
 
 
 struct LockGateView<Content: View>: View {
-    @State private var lock: Bool = false
     @State private var showJBWarning: Bool = false
     @State private var biometryAvailable: Bool = true
     @State private var showSuccess = false
@@ -78,7 +77,7 @@ struct LockGateView<Content: View>: View {
     var body: some View {
         ZStack {
             content()
-            if lock || showJBWarning || !biometryAvailable {
+            if showJBWarning || !biometryAvailable {
                 VisualEffectBlurView()
                     .edgesIgnoringSafeArea(.all)
             }
@@ -109,7 +108,6 @@ struct LockGateView<Content: View>: View {
         }
         .onChange(of: scenePhase) { newPhase in
             withAnimation {
-                lock = newPhase != .active
                 if newPhase == .active {
                     let result = JailbreakDetector.scan()
                     let showJBWarning = result.suspicionScore != 0
@@ -163,5 +161,29 @@ struct LockGateView<Content: View>: View {
             title: "Success",
             messageString: "Face ID/Touch ID setup successful!",
             okTitle: "OK")
+    }
+}
+
+
+struct SensitiveView<Content: View>: View {
+    @State private var lock: Bool = false
+    @Environment(\.scenePhase)
+    private var scenePhase
+    
+    let content: () -> Content
+    
+    var body: some View {
+        ZStack {
+            content()
+            if lock {
+                VisualEffectBlurView()
+                    .edgesIgnoringSafeArea(.all)
+            }
+        }
+        .onChange(of: scenePhase) { newPhase in
+            withAnimation {
+                lock = newPhase != .active 
+            }
+        }
     }
 }
