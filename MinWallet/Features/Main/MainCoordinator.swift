@@ -11,7 +11,7 @@ struct MainCoordinator: View {
     private var bannerState: BannerState
     @EnvironmentObject
     private var hudState: HUDState
-
+    
     var body: some View {
         FlowStack($viewModel.routes, withNavigation: true) {
             SplashView()
@@ -38,10 +38,7 @@ struct MainCoordinator: View {
                         case .createWallet:
                             CreateNewWalletView().navigationBarHidden(true)
                         case .seedPhrase:
-                            SensitiveView { 
-                                CreateNewWalletSeedPhraseView()
-                            }
-                            .navigationBarHidden(true)
+                            CreateNewWalletSeedPhraseView().navigationBarHidden(true)
                         case let .reInputSeedPhrase(seedPhrase):
                             ReInputSeedPhraseView(screenType: .createWallet(seedPhrase: seedPhrase)).navigationBarHidden(true)
                         case let .setupNickName(seedPhrase):
