@@ -16,7 +16,7 @@ final class NetworkManager {
                 validateHost: true
             )
         ]
-        
+
         let serverTrustManager = ServerTrustManager(
             allHostsMustBeEvaluated: true,
             evaluators: evaluators

@@ -7,35 +7,35 @@ class BiometricAuthentication {
     
     private var loginReason: LocalizedStringKey {
         switch biometricType {
-            case .touchID:
-                return "Touch ID"
-            case .faceID:
-                return "Face ID"
-#if swift(>=5.9)
+        case .touchID:
+            return "Touch ID"
+        case .faceID:
+            return "Face ID"
+        #if swift(>=5.9)
             case .opticID:
                 return "Optic ID"
-#endif
-            case .none:
-                return ""
-            @unknown default:
-                return ""
+        #endif
+        case .none:
+            return ""
+        @unknown default:
+            return ""
         }
     }
     
     var displayName: LocalizedStringKey {
         switch biometricType {
-            case .touchID:
-                return "Touch ID"
-            case .faceID:
-                return "Face ID"
-#if swift(>=5.9)
+        case .touchID:
+            return "Touch ID"
+        case .faceID:
+            return "Face ID"
+        #if swift(>=5.9)
             case .opticID:
                 return "Optic ID"
-#endif
-            case .none:
-                return ""
-            @unknown default:
-                return ""
+        #endif
+        case .none:
+            return ""
+        @unknown default:
+            return ""
         }
     }
     
@@ -46,7 +46,7 @@ class BiometricAuthentication {
         return context.biometryType
     }
     
-    init() { }
+    init() {}
     
     static func setupBiometric() async throws {
         try BiometricVault.ensureDeviceSecure()
@@ -72,15 +72,15 @@ class BiometricAuthentication {
         } catch {
             if let error = error as? BiometricVaultError {
                 switch error {
-                    case .itemNotFound:
-                        AppSetting.shared.showBiometryChanged = true
-                        throw BiometricVaultError.ignore
-                    case .passcodeNotSet:
-                        AppSetting.shared.messageForSetting = BiometricVaultError.passcodeNotSet.localizedDescription
-                        AppSetting.shared.openSettingForSetupFaceId = true
-                        throw BiometricVaultError.ignore
-                    default:
-                        throw error
+                case .itemNotFound:
+                    AppSetting.shared.showBiometryChanged = true
+                    throw BiometricVaultError.ignore
+                case .passcodeNotSet:
+                    AppSetting.shared.messageForSetting = BiometricVaultError.passcodeNotSet.localizedDescription
+                    AppSetting.shared.openSettingForSetupFaceId = true
+                    throw BiometricVaultError.ignore
+                default:
+                    throw error
                 }
             } else {
                 throw error

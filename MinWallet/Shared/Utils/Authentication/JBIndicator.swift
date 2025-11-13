@@ -10,7 +10,7 @@ extension UIDevice {
             return false
         #endif
     }
-
+    
     var isJailBroken: Bool {
         get {
             if UIDevice.current.isSimulator { return false }
@@ -28,13 +28,11 @@ extension UIDevice {
 
 private struct JailbreakDetector {
     // MARK: - Direct Checks
-
+    
     static func hasCydiaInstalled() -> Bool {
-        return UIApplication.shared.canOpenURL(URL(string: "cydia://")!) ||
-            UIApplication.shared.canOpenURL(URL(string: "sileo://")!) ||
-            UIApplication.shared.canOpenURL(URL(string: "zbra://")!)
+        return UIApplication.shared.canOpenURL(URL(string: "cydia://")!) || UIApplication.shared.canOpenURL(URL(string: "sileo://")!) || UIApplication.shared.canOpenURL(URL(string: "zbra://")!)
     }
-
+    
     static func isContainsSuspiciousApps() -> Bool {
         for path in suspiciousAppsPathToCheck {
             if FileManager.default.fileExists(atPath: path) {
@@ -43,7 +41,7 @@ private struct JailbreakDetector {
         }
         return false
     }
-
+    
     static func isSuspiciousSystemPathsExists() -> Bool {
         for path in suspiciousSystemPathsToCheck {
             if FileManager.default.fileExists(atPath: path) {
@@ -52,13 +50,13 @@ private struct JailbreakDetector {
         }
         return false
     }
-
+    
     // MARK: - Advanced Checks
-
+    
     static func canEditSystemFiles() -> Bool {
         let jailBreakText = "Developer Insider"
         let path = "/private/" + jailBreakText
-
+        
         do {
             try jailBreakText.write(toFile: path, atomically: true, encoding: .utf8)
             try FileManager.default.removeItem(atPath: path)
@@ -67,7 +65,7 @@ private struct JailbreakDetector {
             return false
         }
     }
-
+    
     static func hasSuspiciousSymlinks() -> Bool {
         let paths = ["/Library", "/usr/lib", "/bin", "/etc", "/var"]
         for path in paths {
@@ -82,7 +80,7 @@ private struct JailbreakDetector {
         }
         return false
     }
-
+    
     static func hasSandboxViolation() -> Bool {
         do {
             try "sandbox_test".write(toFile: "/private/sandbox_test", atomically: true, encoding: .utf8)
@@ -92,7 +90,7 @@ private struct JailbreakDetector {
             return false
         }
     }
-
+    
     // Alternative to fork() check - checks for suspicious dylibs
     static func checkDYLD() -> Bool {
         let suspiciousLibraries = [
@@ -100,9 +98,9 @@ private struct JailbreakDetector {
             "libhooker.dylib",
             "SubstrateBootstrap.dylib",
             "libsubstitute.dylib",
-            "libellekit.dylib"
+            "libellekit.dylib",
         ]
-
+        
         for library in suspiciousLibraries {
             if let _ = dlopen(library, RTLD_NOW) {
                 return true
@@ -110,7 +108,7 @@ private struct JailbreakDetector {
         }
         return false
     }
-
+    
     // MARK: - Path Lists (same as previous version)
     static var suspiciousAppsPathToCheck: [String] {
         return [
@@ -124,24 +122,24 @@ private struct JailbreakDetector {
             "/Applications/RockApp.app",
             "/Applications/SBSettings.app",
             "/Applications/WinterBoard.app",
-
+            
             // Modern jailbreaks
             "/Applications/Palera1n.app",
             "/Applications/Sileo.app",
             "/Applications/Zebra.app",
             "/Applications/TrollStore.app",
             "/var/containers/Bundle/Application/TrollStore.app",
-
+            
             // Checkra1n
             "/Applications/checkra1n.app",
-
+            
             // Rootless jailbreak paths
             "/var/jb/Applications/Cydia.app",
             "/var/jb/Applications/Sileo.app",
-            "/var/jb/Applications/Zebra.app"
+            "/var/jb/Applications/Zebra.app",
         ]
     }
-
+    
     static var suspiciousSystemPathsToCheck: [String] {
         return [
             // Traditional paths
@@ -160,15 +158,15 @@ private struct JailbreakDetector {
             "/etc/apt",
             "/bin/bash",
             "/Library/MobileSubstrate/MobileSubstrate.dylib",
-
+            
             // Modern jailbreak paths
-            "/var/jb", // Rootless jailbreak root
-            "/var/binpack", // Checkm8 jailbreak
+            "/var/jb",  // Rootless jailbreak root
+            "/var/binpack",  // Checkm8 jailbreak
             "/var/containers/Bundle/tweaksupport",
             "/var/mobile/Library/palera1n",
             "/var/mobile/Library/xyz.willy.Zebra",
             "/var/lib/undecimus",
-
+            
             // Palera1n specific
             "/var/jb/basebin",
             "/var/jb/usr",
@@ -177,14 +175,14 @@ private struct JailbreakDetector {
             "/var/jb/.installed_palera1n",
             "/var/binpack/Applications",
             "/var/binpack/usr",
-
+            
             // TrollStore
             "/var/containers/Bundle/Application/trollstorehelper",
             "/var/containers/Bundle/trollstore",
-
+            
             // Bootstrap files
             "/var/jb/preboot",
-            "/var/jb/var"
+            "/var/jb/var",
         ]
     }
 }

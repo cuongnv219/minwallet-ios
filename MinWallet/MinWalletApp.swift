@@ -11,7 +11,7 @@ import SDWebImage
 
 #if canImport(FLEX) && DEBUG
     import FLEX
-
+    
     extension UIWindow {
         open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
             if motion == .motionShake {
@@ -24,28 +24,28 @@ import SDWebImage
 @main
 struct MinWalletApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    
     @StateObject var appSetting: AppSetting = AppSetting.shared
     @StateObject var userInfo: UserInfo = UserInfo.shared
     @StateObject var hudState: HUDState = .init()
     @StateObject var bannerState: BannerState = .init()
     @StateObject var policyVM: PreloadWebViewModel = .init()
-
+    
     var body: some Scene {
         WindowGroup {
             LockGateView {
                 MainCoordinator()
             }
-                .environmentObject(appSetting)
-                .environmentObject(userInfo)
-                .environmentObject(hudState)
-                .environmentObject(bannerState)
-                .environmentObject(policyVM)
-                .environment(\.locale, .init(identifier: appSetting.language))
-                .onAppear {
-                    policyVM.preloadContent(urlString: MinWalletConstant.minPolicyURL + "/headless/privacy-policy")
-                    appSetting.initAppearanceStyle()
-                }
+            .environmentObject(appSetting)
+            .environmentObject(userInfo)
+            .environmentObject(hudState)
+            .environmentObject(bannerState)
+            .environmentObject(policyVM)
+            .environment(\.locale, .init(identifier: appSetting.language))
+            .onAppear {
+                policyVM.preloadContent(urlString: MinWalletConstant.minPolicyURL + "/headless/privacy-policy")
+                appSetting.initAppearanceStyle()
+            }
         }
     }
 }
@@ -62,12 +62,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
         return true
     }
-
+    
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let deviceTokenString = deviceToken.hexString
         UserDataManager.shared.deviceToken = deviceTokenString
     }
-
+    
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return .portrait
     }
@@ -84,7 +84,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         completionHandler(.banner)
     }
     /*
-
+    
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -93,14 +93,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         guard let userInfo = response.notification.request.content.userInfo as? [String: AnyObject] else { return }
         completionHandler()
     }
-
+    
     #if DEBUG
         func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
             print("iOS Native didReceiveRemoteNotification: ", userInfo.debugDescription)
-
+    
             var notificationID: String = ""
             var launchURL: String = ""
-
+    
             if let customOSPayload = userInfo["custom"] as? NSDictionary {
                 if let notificationId = customOSPayload["i"] {
                     notificationID = (notificationId as? String) ?? ""
@@ -119,7 +119,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     }
                 }
             }
-
+    
             print("Notification id: ", notificationID)
             print("launchURL: ", launchURL)
             return .newData

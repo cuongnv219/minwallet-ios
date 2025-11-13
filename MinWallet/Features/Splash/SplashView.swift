@@ -64,7 +64,7 @@ struct LockGateView<Content: View>: View {
     @State private var showJBWarning: Bool = false
     @State private var biometryAvailable: Bool = true
     @State private var showSuccess = false
-
+    
     @EnvironmentObject
     private var appSetting: AppSetting
     @EnvironmentObject
@@ -108,7 +108,7 @@ struct LockGateView<Content: View>: View {
         }
         .onChange(of: scenePhase) { newPhase in
             withAnimation {
-                if newPhase == .active { 
+                if newPhase == .active {
                     guard appSetting.isLogin else { return }
                     let ctxBio = LAContext()
                     var err: NSError?
@@ -143,7 +143,8 @@ struct LockGateView<Content: View>: View {
                     }
                 }
             },
-            onCancel: { })
+            onCancel: {}
+        )
         .showSystemAlert(
             $appSetting.openSettingForSetupFaceId,
             title: "Notice",
@@ -155,7 +156,8 @@ struct LockGateView<Content: View>: View {
                     UIApplication.shared.open(url)
                 }
             },
-            onCancel: { })
+            onCancel: {}
+        )
         .showSystemAlert(
             $showSuccess,
             title: "Success",
@@ -181,16 +183,18 @@ struct SensitiveView<Content: View>: View {
                 GeometryReader {
                     let size = $0.size
                     Color.clear.preference(key: SizeKey.self, value: size)
-                        .onPreferenceChange(SizeKey.self, perform: { value in
-                            if value != .zero {
-                                if hostingController == nil {
-                                    hostingController = UIHostingController(rootView: content)
-                                    hostingController?.view.backgroundColor = .clear
-                                    hostingController?.view.tag = 1009
+                        .onPreferenceChange(
+                            SizeKey.self,
+                            perform: { value in
+                                if value != .zero {
+                                    if hostingController == nil {
+                                        hostingController = UIHostingController(rootView: content)
+                                        hostingController?.view.backgroundColor = .clear
+                                        hostingController?.view.tag = 1009
+                                    }
+                                    hostingController?.view.frame = .init(origin: .zero, size: value)
                                 }
-                                hostingController?.view.frame = .init(origin: .zero, size: value)
-                            }
-                        })
+                            })
                 }
             }
     }

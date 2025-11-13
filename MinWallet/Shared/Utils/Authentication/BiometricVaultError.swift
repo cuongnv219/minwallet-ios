@@ -45,7 +45,7 @@ enum BiometricVaultError: LocalizedError {
         }
     }
     
-    var errorDescription: String? { 
+    var errorDescription: String? {
         self.content.toString()
     }
 }
